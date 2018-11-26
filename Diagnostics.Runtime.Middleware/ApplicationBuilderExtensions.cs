@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Diagnostics.Runtime.Middleware.MemoryDumps;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
 namespace Diagnostics.Runtime.Middleware
@@ -13,6 +14,12 @@ namespace Diagnostics.Runtime.Middleware
             builder.Map(new PathString($"{basePath}/runtime"), x => x.UseMiddleware<RuntimeDiagnosticsMiddleware>());
             builder.Map(new PathString($"{basePath}/heap"), x => x.UseMiddleware<HeapDiagnosticsMiddleware>());
             builder.Map(new PathString($"{basePath}/threads"), x => x.UseMiddleware<ThreadsDiagnosticsMiddleware>());
+
+            if (PlatformServices.IsLinux || PlatformServices.IsWindows)
+            {
+                builder.Map(new PathString($"{basePath}/dump"), x => x.UseMiddleware<MemoryDumpMiddleware>());
+            }
+
 
             builder.Map(new PathString(basePath), x =>
                 x.UseMiddleware<RuntimeDiagnosticsMiddleware>()

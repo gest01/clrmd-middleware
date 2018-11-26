@@ -34,3 +34,8 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 ```
 
 calling the diagnostics endpoint under **http://localhost:56868/diagnostics**
+
+## Generating Memory Dumps
+
+http://localhost:56868/diagnostics/dump
+
