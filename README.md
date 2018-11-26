@@ -1,6 +1,6 @@
 # clrmd-middleware
 
-ASP.NET Core Middleware for introspecting processes using [Microsoft.Diagnostics.Runtime](https://github.com/Microsoft/clrmd)
+ASP.NET Core Middleware for introspecting current dotnet process using [Microsoft.Diagnostics.Runtime](https://github.com/Microsoft/clrmd)
 
 Call services.AddClrMd() in your ConfigureServices Method:
 
