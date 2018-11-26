@@ -15,12 +15,12 @@ namespace Diagnostics.Runtime.Middleware.MemoryDumps
         public Task<MemoryStream> CreateMemoryDumpAsync(Process process)
         {
             // We can't do this "asynchronously" so just Task.Run it. It shouldn't be "long-running" so this is fairly safe.
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 string tempPath = Path.GetTempFileName();
 
                 // Open the file for writing
-                MemoryStream ms = new MemoryStream();
+
                 using (var fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
                 {
                     // Dump the process!
@@ -30,10 +30,16 @@ namespace Diagnostics.Runtime.Middleware.MemoryDumps
                         var err = Marshal.GetHRForLastWin32Error();
                         Marshal.ThrowExceptionForHR(err);
                     }
+                }
 
-                    fileStream.CopyTo(ms);
+                using (FileStream file = new FileStream(tempPath, FileMode.Open, FileAccess.Read))
+                {
+                    MemoryStream ms = new MemoryStream();
+                    await file.CopyToAsync(ms);
+                    ms.Seek(0, SeekOrigin.Begin);
                     return ms;
                 }
+
             });
         }
 

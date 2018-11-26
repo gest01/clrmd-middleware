@@ -18,14 +18,13 @@ namespace Diagnostics.Runtime.Middleware.MemoryDumps
         public async Task InvokeAsync(HttpContext context)
         {
             var process = Process.GetCurrentProcess();
-            var dump = await _memoryDumper.CreateMemoryDumpAsync(process);
+            using (var dump = await _memoryDumper.CreateMemoryDumpAsync(process))
+            {
+                string filename = $"{process.ProcessName}-{process.Id}.dmp";
 
-            string filename = $"{process.ProcessName}-{process.Id}.dmp";
-
-            context.Response.ContentType = "application/octet-stream";
-            context.Response.Headers.Add("Content-Disposition", new Microsoft.Extensions.Primitives.StringValues($"attachment; filename='{filename}'"));
-
-            dump.WriteTo(context.Response.Body);
+                context.Response.Headers.Add("Content-Disposition", new Microsoft.Extensions.Primitives.StringValues($"attachment; filename='{filename}'"));
+                await dump.CopyToAsync(context.Response.Body);
+            }
         }
     }
 }
