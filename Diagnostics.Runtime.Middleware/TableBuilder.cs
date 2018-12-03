@@ -33,7 +33,15 @@ namespace Diagnostics.Runtime.Middleware
                 builder.AppendLine("<tr>");
                 foreach (var property in properties)
                 {
-                    builder.Append($"<td>{property.GetValue(record)}</td>");
+                    object value = property.GetValue(record);
+                    if (value is TableColumn)
+                    {
+                        builder.Append($"<td>{value.ToString()}</td>");
+                    }
+                    else
+                    {
+                        builder.Append($"<td>{value}</td>");
+                    }
                 }
                 builder.AppendLine("</tr>");
             }

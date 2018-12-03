@@ -32,8 +32,8 @@ namespace Diagnostics.Runtime.Middleware
                 {
                     string content = TableBuilder.CreateDataTable($"Stack for Thread {threadId}", thread.StackTrace.Select(f => new
                     {
-                        InstructionPointer = f.InstructionPointer,
-                        StackPointer = f.StackPointer,
+                        InstructionPointer = TableColumn.Wrap(f.InstructionPointer).Format("{0,12:X}"),
+                        StackPointer = TableColumn.Wrap(f.StackPointer).Format("{0,12:X}"),
                         DisplayString = f.DisplayString,
                         Method = f.Method,
                         ModuleName = f.ModuleName,
