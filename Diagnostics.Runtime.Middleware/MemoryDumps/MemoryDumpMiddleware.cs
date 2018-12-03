@@ -18,7 +18,7 @@ namespace Diagnostics.Runtime.Middleware.MemoryDumps
         public async Task InvokeAsync(HttpContext context)
         {
             var process = Process.GetCurrentProcess();
-            using (var dump = await _memoryDumper.CreateMemoryDumpAsync(process))
+            using (var dump = _memoryDumper.CreateMemoryDump(process))
             {
                 string filename = $"{process.ProcessName}-{process.Id}.dmp";
 

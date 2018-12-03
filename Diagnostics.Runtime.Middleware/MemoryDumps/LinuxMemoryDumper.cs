@@ -9,6 +9,11 @@ namespace Diagnostics.Runtime.Middleware.MemoryDumps
     /// </summary>
     internal class LinuxMemoryDumper : IMemoryDumper
     {
+        public Stream CreateMemoryDump(Process process)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task<MemoryStream> CreateMemoryDumpAsync(Process process)
         {
             throw new System.NotImplementedException();

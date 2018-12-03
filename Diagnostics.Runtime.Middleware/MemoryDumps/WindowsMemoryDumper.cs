@@ -12,36 +12,26 @@ namespace Diagnostics.Runtime.Middleware.MemoryDumps
     /// </summary>
     internal class WindowsMemoryDumper : IMemoryDumper
     {
-        public Task<MemoryStream> CreateMemoryDumpAsync(Process process)
+        public Stream CreateMemoryDump(Process process)
         {
-            // We can't do this "asynchronously" so just Task.Run it. It shouldn't be "long-running" so this is fairly safe.
-            return Task.Run(async () =>
+            string tempPath = Path.GetTempFileName();
+
+            // Open the file for writing
+
+            var fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+
+            // Dump the process!
+            var exceptionInfo = new NativeMethods.MINIDUMP_EXCEPTION_INFORMATION();
+            if (!NativeMethods.MiniDumpWriteDump(process.Handle, (uint)process.Id, fileStream.SafeFileHandle, NativeMethods.MINIDUMP_TYPE.MiniDumpWithFullMemory, ref exceptionInfo, IntPtr.Zero, IntPtr.Zero))
             {
-                string tempPath = Path.GetTempFileName();
+                var err = Marshal.GetHRForLastWin32Error();
+                Marshal.ThrowExceptionForHR(err);
+            }
 
-                // Open the file for writing
-
-                using (var fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
-                {
-                    // Dump the process!
-                    var exceptionInfo = new NativeMethods.MINIDUMP_EXCEPTION_INFORMATION();
-                    if (!NativeMethods.MiniDumpWriteDump(process.Handle, (uint)process.Id, fileStream.SafeFileHandle, NativeMethods.MINIDUMP_TYPE.MiniDumpWithFullMemory, ref exceptionInfo, IntPtr.Zero, IntPtr.Zero))
-                    {
-                        var err = Marshal.GetHRForLastWin32Error();
-                        Marshal.ThrowExceptionForHR(err);
-                    }
-                }
-
-                using (FileStream file = new FileStream(tempPath, FileMode.Open, FileAccess.Read))
-                {
-                    MemoryStream ms = new MemoryStream();
-                    await file.CopyToAsync(ms);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    return ms;
-                }
-
-            });
+            fileStream.Seek(0, SeekOrigin.Begin);
+            return fileStream;
         }
+      
 
         private static class NativeMethods
         {
