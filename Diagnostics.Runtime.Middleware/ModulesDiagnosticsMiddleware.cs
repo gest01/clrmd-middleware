@@ -5,12 +5,12 @@ using Microsoft.Diagnostics.Runtime;
 
 namespace Diagnostics.Runtime.Middleware
 {
-    internal class ThreadsDiagnosticsMiddleware
+    internal class ModulesDiagnosticsMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly IDataTargetProvider _dataTargetProvider;
 
-        public ThreadsDiagnosticsMiddleware(RequestDelegate next, IDataTargetProvider dataTargetProvider)
+        public ModulesDiagnosticsMiddleware(RequestDelegate next, IDataTargetProvider dataTargetProvider)
         {
             _next = next;
             _dataTargetProvider = dataTargetProvider;
@@ -20,12 +20,16 @@ namespace Diagnostics.Runtime.Middleware
         {
             ClrInfo runtimeInfo = _dataTargetProvider.GetDataTarget().ClrVersions[0];
             ClrRuntime runtime = runtimeInfo.CreateRuntime();
-            var content = TableBuilder.CreateDataTable("Threads", runtime.Threads.Select(f => new
+            var content = TableBuilder.CreateDataTable("Modules", runtime.Modules.Select(f => new
             {
-                ThreadId = f.OSThreadId,
-                GcMode = f.GcMode,
-                Runtime = f.Runtime.ToString(),
-                AppDomains = string.Join(",", f.Runtime.AppDomains.Select(a => a.Name))
+                AssemblyId = f.AssemblyId,
+                AssemblyName = f.AssemblyName,
+                DebuggingMode = f.DebuggingMode,
+                FileName = f.FileName,
+                ImageBase = f.ImageBase,
+                MetadataAddress = f.MetadataAddress,
+                Name = f.Name,
+                Runtime = f.Runtime,
             }));
 
             await _next(context);

@@ -14,6 +14,7 @@ namespace Diagnostics.Runtime.Middleware
             builder.Map(new PathString($"{basePath}/runtime"), x => x.UseMiddleware<RuntimeDiagnosticsMiddleware>());
             builder.Map(new PathString($"{basePath}/heap"), x => x.UseMiddleware<HeapDiagnosticsMiddleware>());
             builder.Map(new PathString($"{basePath}/threads"), x => x.UseMiddleware<ThreadsDiagnosticsMiddleware>());
+            builder.Map(new PathString($"{basePath}/modules"), x => x.UseMiddleware<ModulesDiagnosticsMiddleware>());
 
             if (PlatformServices.IsLinux || PlatformServices.IsWindows)
             {
@@ -22,10 +23,14 @@ namespace Diagnostics.Runtime.Middleware
 
 
             builder.Map(new PathString(basePath), x =>
-                x.UseMiddleware<RuntimeDiagnosticsMiddleware>()
+                 
+                
+                 x.UseMiddleware<HeapDiagnosticsMiddleware>()
+                 .UseMiddleware<ThreadsDiagnosticsMiddleware>()
                  .UseMiddleware<StacksDiagnosticsMiddleware>()
-                 .UseMiddleware<HeapDiagnosticsMiddleware>()
-                 .UseMiddleware<ThreadsDiagnosticsMiddleware>());
+                 .UseMiddleware<ModulesDiagnosticsMiddleware>()
+                 .UseMiddleware<RuntimeDiagnosticsMiddleware>()
+                 );
 
             return builder;
         }
