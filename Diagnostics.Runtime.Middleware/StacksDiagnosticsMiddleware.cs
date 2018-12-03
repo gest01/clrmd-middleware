@@ -30,7 +30,8 @@ namespace Diagnostics.Runtime.Middleware
                 ClrThread thread = runtime.Threads.FirstOrDefault(f => f.OSThreadId.ToString() == threadId);
                 if (thread != null)
                 {
-                    string content = TableBuilder.CreateDataTable($"Stack for Thread {threadId}", thread.StackTrace.Select(f => new {
+                    string content = TableBuilder.CreateDataTable($"Stack for Thread {threadId}", thread.StackTrace.Select(f => new
+                    {
                         InstructionPointer = f.InstructionPointer,
                         StackPointer = f.StackPointer,
                         DisplayString = f.DisplayString,
@@ -39,15 +40,8 @@ namespace Diagnostics.Runtime.Middleware
                     }));
 
                     await context.Response.WriteAsync(content);
-
-
-                    //foreach (ClrStackFrame frame in thread.StackTrace)
-                    //{
-
-                    //}
                 }
             }
-
         }
     }
 }
