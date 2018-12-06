@@ -22,7 +22,7 @@ namespace Diagnostics.Runtime.Middleware
             ClrRuntime runtime = runtimeInfo.CreateRuntime();
             var content = TableBuilder.CreateDataTable("Threads", runtime.Threads.Select(f => new
             {
-                ThreadId = f.OSThreadId,
+                ThreadId = TableColumn.Wrap(f.OSThreadId).Link(f.OSThreadId.ToString(), $"{context.Request.PathBase.Value}/stacks?id={f.OSThreadId}"),
                 GcMode = f.GcMode,
                 Runtime = f.Runtime.ToString(),
                 AppDomains = string.Join(",", f.Runtime.AppDomains.Select(a => a.Name))

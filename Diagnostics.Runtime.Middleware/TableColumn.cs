@@ -1,13 +1,24 @@
 ﻿namespace Diagnostics.Runtime.Middleware
 {
+
     internal class TableColumn
     {
         private readonly object _item;
         private string _format;
 
+        private string _linkText;
+        private string _link;
+
         public TableColumn(object item)
         {
             _item = item;
+        }
+
+        public TableColumn Link(string text, string link)
+        {
+            _linkText = text;
+            _link = link;
+            return this;
         }
 
         public TableColumn Format(string format)
@@ -18,14 +29,19 @@
 
         public override string ToString()
         {
-            if (string.IsNullOrWhiteSpace(_format))
+            string value = _item.ToString();
+
+            if (!string.IsNullOrWhiteSpace(_format))
             {
-                return _item.ToString();
+                value = string.Format(_format, _item);
             }
-            else
+
+            if (!string.IsNullOrWhiteSpace(_link) && !string.IsNullOrWhiteSpace(_linkText))
             {
-                return string.Format(_format, _item);
+                value = $"<a href='{_link}'>{_linkText}</a>";
             }
+
+            return value;
         }
 
         public static TableColumn Wrap(object item)
