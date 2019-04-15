@@ -22,7 +22,7 @@ namespace Diagnostics.Runtime.Middleware.MemoryDumps
             {
                 string filename = $"{process.ProcessName}-{process.Id}.dmp";
 
-                context.Response.Headers.Add("Content-Disposition", new Microsoft.Extensions.Primitives.StringValues($"attachment; filename='{filename}'"));
+                context.Response.Headers.Add("Content-Disposition", new Microsoft.Extensions.Primitives.StringValues($"attachment; filename={filename}"));
                 await dump.CopyToAsync(context.Response.Body);
             }
         }
