@@ -23,14 +23,12 @@ namespace Diagnostics.Runtime.Middleware
 
 
             builder.Map(new PathString(basePath), x =>
-                 
-                
-                 x.UseMiddleware<HeapDiagnosticsMiddleware>()
-                 .UseMiddleware<ThreadsDiagnosticsMiddleware>()
-                 .UseMiddleware<StacksDiagnosticsMiddleware>()
-                 .UseMiddleware<ModulesDiagnosticsMiddleware>()
-                 .UseMiddleware<RuntimeDiagnosticsMiddleware>()
-                 );
+                x.UseMiddleware<HeapDiagnosticsMiddleware>()
+                    .UseMiddleware<ThreadsDiagnosticsMiddleware>()
+                    .UseMiddleware<StacksDiagnosticsMiddleware>()
+                    .UseMiddleware<ModulesDiagnosticsMiddleware>()
+                    .UseMiddleware<RuntimeDiagnosticsMiddleware>()
+            );
 
             return builder;
         }

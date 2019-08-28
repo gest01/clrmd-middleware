@@ -22,7 +22,13 @@ namespace Diagnostics.Runtime.Middleware.MemoryDumps
 
             // Dump the process!
             var exceptionInfo = new NativeMethods.MINIDUMP_EXCEPTION_INFORMATION();
-            if (!NativeMethods.MiniDumpWriteDump(process.Handle, (uint)process.Id, fileStream.SafeFileHandle, NativeMethods.MINIDUMP_TYPE.MiniDumpWithFullMemory, ref exceptionInfo, IntPtr.Zero, IntPtr.Zero))
+            if (!NativeMethods.MiniDumpWriteDump(process.Handle,
+                (uint) process.Id,
+                fileStream.SafeFileHandle,
+                NativeMethods.MINIDUMP_TYPE.MiniDumpWithFullMemory,
+                ref exceptionInfo,
+                IntPtr.Zero,
+                IntPtr.Zero))
             {
                 var err = Marshal.GetHRForLastWin32Error();
                 Marshal.ThrowExceptionForHR(err);
